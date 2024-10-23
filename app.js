@@ -8,12 +8,23 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
+// const session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var bookRoutes = require('./routes/book');
 
 var app = express();
+
+// app.use(session({
+//   secret: 'secret',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { 
+//     secure: false,
+//     maxAge: 1000 * 60 * 60 * 24 // 1 day
+//   }
+// }))
 
 // mongoose.connect('mongodb://localhost/bookstore', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -32,10 +43,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-KEY');
+  next();
+});
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cookieParser('rahasia123'));
 app.use(express.static(path.join(__dirname, 'public')));
 const myLogger = function (req, res, next) {
   console.log('LOGGED')
